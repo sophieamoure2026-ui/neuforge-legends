@@ -173,7 +173,7 @@ def run_committee(
     tickers: list[str],
     analysts: list[str],
     api_key: str,
-    model: str = "llama3.2:1b",
+    model: str = "mistral:7b",
     start_date: str = "2024-01-01",
     end_date: str = "2025-01-01",
     local_url: str = "http://187.77.194.119:11434",  # VPS-1 Ollama
