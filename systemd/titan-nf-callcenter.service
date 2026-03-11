@@ -1,0 +1,21 @@
+[Unit]
+Description=Titan NeuForge Call Center — BANT IVR, 4 Branches, Live Transfer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/titan
+EnvironmentFile=/opt/titan/.env
+ExecStart=/usr/bin/python3 /opt/titan/Titan_NeuForgeCallCenter.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=titan-nf-callcenter
+KillMode=process
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+[Unit]
+Description=Titan NeuForge Harvester — AI Lead Scraper (4 sources, 500+ leads/wk)
+After=network-online.target redis.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/titan
+EnvironmentFile=/opt/titan/.env
+ExecStart=/usr/bin/python3 /opt/titan/Titan_NeuForgeHarvester.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=titan-nf-harvester
+KillMode=process
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

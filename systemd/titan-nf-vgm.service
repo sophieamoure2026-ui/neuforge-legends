@@ -1,0 +1,21 @@
+[Unit]
+Description=Titan NeuForge VGM — Voicemail Drop Engine (Telnyx, business hours)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/titan
+EnvironmentFile=/opt/titan/.env
+ExecStart=/usr/bin/python3 /opt/titan/Titan_NeuForgeVGM.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=titan-nf-vgm
+KillMode=process
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

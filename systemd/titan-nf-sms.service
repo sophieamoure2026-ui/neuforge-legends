@@ -1,0 +1,21 @@
+[Unit]
+Description=Titan NeuForge SMS — 6-Touch Drip Campaign (Day 0→14)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/titan
+EnvironmentFile=/opt/titan/.env
+ExecStart=/usr/bin/python3 /opt/titan/Titan_NeuForgeSMS.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=titan-nf-sms
+KillMode=process
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
