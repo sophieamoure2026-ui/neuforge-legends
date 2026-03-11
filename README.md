@@ -10,6 +10,8 @@ Warren Buffett. Michael Burry. Charlie Munger. Cathie Wood. Bill Ackman. And 13 
 [![Discord](https://img.shields.io/badge/Discord-Join-7289da)](https://neuforge.app/discord)
 [![Hosted](https://img.shields.io/badge/Hosted%20at-neuforge.app-orange)](https://neuforge.app/legends)
 
+![NeuForge Legends Pool — Committee Analysis Chamber](demo.png)
+
 ---
 
 ## What it does
