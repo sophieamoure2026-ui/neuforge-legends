@@ -173,20 +173,50 @@ def run_committee(
     tickers: list[str],
     analysts: list[str],
     api_key: str,
-    model: str = "llama-3.1-8b-instant",
+    model: str = "llama3.2:1b",
     start_date: str = "2024-01-01",
     end_date: str = "2025-01-01",
+    local_url: str = "http://187.77.194.119:11434",  # VPS-1 Ollama
 ) -> CommitteeResult:
-    """Run all selected legend agents and aggregate their votes."""
-    try:
-        from langchain_groq import ChatGroq
-        from langchain_core.messages import HumanMessage
-    except ImportError:
-        raise ImportError("Install langchain-groq: pip install langchain-groq")
+    """Run all selected legend agents and aggregate their votes.
+    
+    Inference priority:
+      1. Local Ollama on VPS-1 (zero cost)
+      2. Groq API (fallback if local unavailable)
+    """
+    import urllib.request
 
-    llm = ChatGroq(api_key=api_key, model=model, temperature=0.3)
+    # ── Detect local Ollama availability ─────────────────────────────────────
+    use_local = False
+    try:
+        req = urllib.request.Request(f"{local_url}/api/tags", method="GET")
+        with urllib.request.urlopen(req, timeout=3) as r:
+            use_local = r.status == 200
+    except Exception:
+        use_local = False
+
+    if use_local:
+        try:
+            from langchain_community.chat_models import ChatOllama
+            from langchain_core.messages import HumanMessage as HM
+            llm = ChatOllama(base_url=local_url, model=model, temperature=0.3)
+            print(f"[NeuForge] Local inference active — {local_url} ({model})")
+        except ImportError:
+            use_local = False
+
+    if not use_local:
+        try:
+            from langchain_groq import ChatGroq
+            from langchain_core.messages import HumanMessage as HM
+            llm = ChatGroq(api_key=api_key, model="llama-3.1-8b-instant", temperature=0.3)
+            print("[NeuForge] Groq fallback active")
+        except ImportError:
+            raise ImportError("Install: pip install langchain-groq")
+
     result = CommitteeResult(tickers=tickers, analysts=analysts)
     ticker_str = ", ".join(tickers)
+
+    from langchain_core.messages import HumanMessage as HM
 
     for agent_id in analysts:
         if agent_id not in LEGENDS:
@@ -203,7 +233,7 @@ CONFIDENCE: [0-100]
 REASONING: [2-3 sentences max]"""
 
         try:
-            response = llm.invoke([HumanMessage(content=prompt)])
+            response = llm.invoke([HM(content=prompt)])
             text = response.content.strip()
 
             signal = "HOLD"
